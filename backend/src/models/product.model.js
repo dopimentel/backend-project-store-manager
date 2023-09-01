@@ -9,6 +9,7 @@ const getAll = async () => {
 const findById = async (id) => {
   const [product] = await connection.execute('SELECT * FROM products WHERE id = ?', [id]);
   if (product.length === 0) return null;
+  console.log(product[0]);
   return product[0];
 };
 
