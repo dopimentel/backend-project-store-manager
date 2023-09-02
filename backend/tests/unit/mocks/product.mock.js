@@ -22,7 +22,10 @@ const productFromDB = {
   name: 'Skol Lata 250ml',
 };
 
+const productFromDBIdNotExists = [];
+
 module.exports = {
   productFromDB,
   productsFromDB,
+  productFromDBIdNotExists,
 };
