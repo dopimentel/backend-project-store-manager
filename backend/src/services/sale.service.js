@@ -11,7 +11,13 @@ const findById = async (id) => {
   return { status: 'SUCCESSFUL', data: sale };
 };
 
+const createSaleProduct = async (products) => {
+  const newSale = await saleModel.createSaleProduct(products);
+  return { status: 'CREATED', data: newSale };
+};
+
 module.exports = {
   getAll,
   findById,
+  createSaleProduct,
 };

@@ -33,7 +33,29 @@ const findById = async (id) => {
     }));
 };
 
+const createSale = async () => {
+  const [{ insertId }] = await connection.execute(`INSERT INTO sales (id, date) 
+  VALUES (DEFAULT, CURRENT_TIMESTAMP);`);
+  return insertId;
+};
+
+const createSaleProduct = async (products) => {
+  const id = await createSale();
+  const newSale = {
+    id,
+    itemsSold: products,
+  };
+  const productsPromises = products.map(async (product) => {
+    const { productId, quantity } = product;
+    await connection.execute(`INSERT INTO sales_products (sale_id, product_id, quantity)
+    VALUES (?, ?, ?);`, [id, productId, quantity]);
+  });
+  await Promise.all(productsPromises);
+  return newSale;
+};
+
 module.exports = {
   getAll,
   findById,
+  createSaleProduct,
 };
