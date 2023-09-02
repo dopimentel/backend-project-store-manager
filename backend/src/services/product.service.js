@@ -2,7 +2,6 @@ const { productModel } = require('../models');
 
 const getAll = async () => {
   const products = await productModel.getAll();
-  console.log(products);
   return { status: 'SUCCESSFUL', data: products };
 };
 
