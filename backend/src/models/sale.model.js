@@ -27,7 +27,6 @@ const findById = async (id) => {
   if (sale.length === 0) return null;
   return sale
     .map((s) => ({
-      saleId: id,
       productId: s.product_id,
       date: s.date,
       quantity: s.quantity,
