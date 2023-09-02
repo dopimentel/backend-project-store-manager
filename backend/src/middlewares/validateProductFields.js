@@ -5,11 +5,12 @@ const validateProduct = (req, res, next) => {
   const { name } = req.body;
   const { error } = addProductSchema.validate({ name });
   if (error) {
-    const type = error.details[0].type;
+    const { details } = error;
+    const { type } = details[0];
     return res.status(joiMapErrorToStatus(type)).json({ message: error.message });
-  };
+  }
   next();
-}
+};
 
 module.exports = {
   validateProduct,

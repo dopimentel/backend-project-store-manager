@@ -25,9 +25,13 @@ const findById = async (id) => {
   WHERE SP.sale_id = ?
   ORDER BY sale_id ASC, product_id ASC`, [id]);
   if (sale.length === 0) return null;
-  const camelSale = sale
-    .map((s) => ({ productId: s.product_id, date: s.date, quantity: s.quantity }));
-  return camelSale;
+  return sale
+    .map((s) => ({
+      saleId: id,
+      productId: s.product_id,
+      date: s.date,
+      quantity: s.quantity,
+    }));
 };
 
 module.exports = {
