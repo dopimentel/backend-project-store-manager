@@ -7,9 +7,12 @@ const getAll = async () => {
   INNER JOIN sales AS S
   ON SP.sale_id = S.id 
   ORDER BY sale_id ASC, product_id ASC`);
-  const camelSales = sales.map((sale) => {
-    return { saleId: sale.sale_id, productId: sale.product_id, date: sale.date, quantity: sale.quantity };
-  });
+  const camelSales = sales.map((sale) => ({
+  saleId: sale.sale_id,
+  productId: sale.product_id,
+  date: sale.date,
+  quantity: sale.quantity,
+  }));
   return camelSales;
 };
 
@@ -22,9 +25,8 @@ const findById = async (id) => {
   WHERE SP.sale_id = ?
   ORDER BY sale_id ASC, product_id ASC`, [id]);
   if (sale.length === 0) return null;
-  const camelSale = sale.map((sale) => {
-    return { productId: sale.product_id, date: sale.date, quantity: sale.quantity };
-  });
+  const camelSale = sale
+    .map((s) => ({ productId: s.product_id, date: s.date, quantity: s.quantity }));
   return camelSale;
 };
 
