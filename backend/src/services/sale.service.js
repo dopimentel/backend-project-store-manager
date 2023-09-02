@@ -2,7 +2,10 @@ const { saleModel } = require('../models');
 
 const getAll = async () => {
   const sales = await saleModel.getAll();
-  return { status: 'SUCCESSFUL', data: sales };
+  camelSales = sales.map((sale) => {
+    return { saleId: sale.sale_id, productId: sale.product_id, date: sale.date, quantity: sale.quantity };
+  });
+  return { status: 'SUCCESSFUL', data: camelSales };
 };
 
 const findById = async (id) => {
