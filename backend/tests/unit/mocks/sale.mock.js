@@ -69,6 +69,11 @@ const saleFromModel = [
 
 const saleFromDBIdNotExists = [];
 
+const salesFromService = {
+  status: 'SUCCESSFUL',
+  data: salesFromModel,
+};
+
 module.exports = {
   DATE,
   salesFromDB,
@@ -76,4 +81,5 @@ module.exports = {
   salesFromModel,
   saleFromModel,
   saleFromDBIdNotExists,
+  salesFromService,
 };

@@ -48,10 +48,16 @@ const productFromModel = {
   name: 'Skol Lata 250ml',
 };
 
+const productsFromService = {
+  status: 'SUCCESSFUL',
+  data: productsFromModel,
+};
+
 module.exports = {
   productFromDB,
   productsFromDB,
   productFromDBIdNotExists,
   productsFromModel,
   productFromModel,
+  productsFromService,
 };
