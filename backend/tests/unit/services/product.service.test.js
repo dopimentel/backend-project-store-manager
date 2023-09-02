@@ -24,4 +24,13 @@ describe('Realizando testes - PRODUCT SERVICE:', function () {
     expect(serviceResponse.status).to.be.equal('SUCCESSFUL');
     expect(serviceResponse.data).to.deep.equal(productsFromModel[0]);
   });
+  it('Verificando se a função findById retorna um erro quando o ID não existe', async function () {
+    sinon.stub(productModel, 'findById').resolves(null);
+
+    const serviceResponse = await productService.findById(10000);
+
+    expect(serviceResponse).to.be.an('object');
+    expect(serviceResponse.status).to.be.equal('NOT_FOUND');
+    expect(serviceResponse.data).to.deep.equal({ message: 'Product not found' });
+  });
 });
