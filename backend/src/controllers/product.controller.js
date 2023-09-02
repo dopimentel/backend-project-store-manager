@@ -12,7 +12,14 @@ const findById = async (req, res) => {
   return res.status(mapStatus(status)).json(data);
 };
 
+const create = async (req, res) => {
+  const { name } = req.body;
+  const { status, data } = await productService.create(name);
+  return res.status(mapStatus(status)).json(data);
+};
+
 module.exports = {
   getAll,
   findById,
+  create,
 };
