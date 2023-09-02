@@ -4,7 +4,6 @@ const { productModel } = require('../../../src/models');
 const { productsFromModel } = require('../mocks/product.mock');
 const { productService } = require('../../../src/services');
 
-
 describe('Realizando testes - PRODUCT SERVICE:', function () {
   afterEach(function () {
     sinon.restore();
@@ -16,5 +15,4 @@ describe('Realizando testes - PRODUCT SERVICE:', function () {
     
     expect(serviceResponse).to.be.an('object');
   });
-
 });

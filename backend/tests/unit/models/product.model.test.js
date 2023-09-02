@@ -26,7 +26,6 @@ describe('Realizando testes - PRODUCT MODEL:', function () {
   it('Verificando se a função findById retorna null quando o ID não existe', async function () {
     sinon.stub(connection, 'execute').resolves([productFromDBIdNotExists]);
     const product = await productModel.findById(10000);
-    expect(product).to.be.null;
+    expect(product).to.equal(null);
   });
-
 });
