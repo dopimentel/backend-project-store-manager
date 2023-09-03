@@ -11,10 +11,10 @@ describe('Realizando testes - PRODUCT MODEL:', function () {
   });
   it('Listando os produtos com sucesso e retornar um array', async function () {
     sinon.stub(connection, 'execute').resolves([productsFromDB]);
-    const products = await connection.execute();
-    expect(products[0]).to.be.an('array');
-    expect(products[0]).to.deep.equal(productsFromDB);
-    expect(products[0]).to.have.lengthOf(4);
+    const products = await productModel.getAll();
+    expect(products).to.be.an('array');
+    expect(products).to.deep.equal(productsFromDB);
+    expect(products).to.have.lengthOf(4);
   });
 
   it('Recuperando um produto pelo ID com sucesso e retornar um objeto', async function () {

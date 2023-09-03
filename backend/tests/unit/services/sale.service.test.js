@@ -35,4 +35,42 @@ describe('Realizando testes - SALE SERVICE:', function () {
     expect(serviceResponse.status).to.be.equal('NOT_FOUND');
     expect(serviceResponse.data).to.deep.equal({ message: 'Sale not found' });
   });
+  it('Criando uma venda com sucesso e retornando o objeto da venda', async function () {
+    sinon.stub(saleModel, 'createSaleProduct').resolves(salesFromModel[0]);
+
+    const products = [
+      {
+        productId: 1,
+        quantity: 2,
+      },
+      {
+        productId: 2,
+        quantity: 3,
+      },
+    ];
+    const serviceResponse = await saleService.createSaleProduct(products);
+
+    expect(serviceResponse).to.be.an('object');
+    expect(serviceResponse.status).to.be.equal('CREATED');
+    expect(serviceResponse.data).to.deep.equal(salesFromModel[0]);
+  });
+  it('Verificando se a função deleteSale retorna um erro quando o ID não existe', async function () {
+    sinon.stub(saleModel, 'findById').resolves(null);
+
+    const serviceResponse = await saleService.deleteSale(10000);
+
+    expect(serviceResponse).to.be.an('object');
+    expect(serviceResponse.status).to.be.equal('NOT_FOUND');
+    expect(serviceResponse.data).to.deep.equal({ message: 'Sale not found' });
+  });
+  it('Verificando se a função deleteSale retorna um objeto da venda deletada', async function () {
+    sinon.stub(saleModel, 'findById').resolves(salesFromModel[0]);
+    sinon.stub(saleModel, 'deleteSale').resolves(salesFromModel[0]);
+
+    const serviceResponse = await saleService.deleteSale(1);
+
+    expect(serviceResponse).to.be.an('object');
+    expect(serviceResponse.status).to.be.equal('NO_CONTENT');
+    expect(serviceResponse.data).to.deep.equal(salesFromModel[0]);
+  });
 });

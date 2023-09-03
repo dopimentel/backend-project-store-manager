@@ -75,4 +75,21 @@ describe('Realizando testes - SALE MODEL:', function () {
 
     expect(sale).to.equal(null);
   });
+
+  it('Atualizando a quantidade de um produto com sucesso e retornando um objeto', async function () {
+    sinon.stub(connection, 'execute').onCall(0).resolves([saleFromDB]).onCall(1)
+      .resolves([{ affectedRows: 1 }]);
+    const newSale = await saleModel.updateProductQuantity(1, 1, 10);
+
+    expect(newSale).to.be.an('object');
+  });
+
+  it('Atualizando a quantidade de um produto falha id não existe e retornando null', async function () {
+    sinon.stub(connection, 'execute').onCall(0)
+      .resolves([saleFromDBIdNotExists]).onCall(1)
+      .resolves([{ affectedRows: 0 }]);
+    const newSale = await saleModel.updateProductQuantity(1000, 1, 10);
+
+    expect(newSale).to.equal(null);
+  });
 });
