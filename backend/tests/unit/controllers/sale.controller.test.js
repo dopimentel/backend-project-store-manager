@@ -2,7 +2,7 @@ const chai = require('chai');
 const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
 const { saleController } = require('../../../src/controllers');
-const { salesFromService, saleFromServiceCreated } = require('../mocks/sale.mock');
+const { serviceResponseCreated, serviceResponseSucessful, serviceResponseByIdSucessful, serviceResponseNotFound } = require('../mocks/sale.mock');
 const { saleService, productService } = require('../../../src/services');
 const { validateSaleItem } = require('../../../src/middlewares/validateSaleFields');
 
@@ -14,8 +14,8 @@ describe('Realizando testes - SALE CONTROLLER:', function () {
     sinon.restore();
   });
 
-  it('Verificando se a função getAll retorna um array', async function () {
-    sinon.stub(saleService, 'getAll').resolves(salesFromService);
+  it('Listando todas as vendas com sucesso', async function () {
+    sinon.stub(saleService, 'getAll').resolves(serviceResponseSucessful);
 
     const req = {};
     const res = {
@@ -26,10 +26,49 @@ describe('Realizando testes - SALE CONTROLLER:', function () {
     await saleController.getAll(req, res);
 
     expect(res.status).to.be.calledWith(200);
-    expect(res.json).to.be.calledWith(salesFromService.data);
+    expect(res.json).to.be.calledWith(serviceResponseSucessful.data);
   });
-  it('Verificando inserção de venda com sucesso', async function () {
-    sinon.stub(saleService, 'createSaleProduct').resolves(saleFromServiceCreated);
+
+  it('Buscando venda por id com sucesso - id existente', async function () {
+    sinon.stub(saleService, 'findById').resolves(serviceResponseByIdSucessful);
+
+    const req = {
+      params: {
+        id: 1,
+      },
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+
+    await saleController.findById(req, res);
+
+    expect(res.status).to.be.calledWith(200);
+    expect(res.json).to.be.calledWith(serviceResponseByIdSucessful.data);
+  });
+
+  it('Buscando venda por id com falha - id inexistente', async function () {
+    sinon.stub(saleService, 'findById').resolves(serviceResponseNotFound);
+
+    const req = {
+      params: {
+        id: 1,
+      },
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+
+    await saleController.findById(req, res);
+
+    expect(res.status).to.be.calledWith(404);
+    expect(res.json).to.have.been.calledWith(serviceResponseNotFound.data);
+  });
+
+  it('Criando uma venda com sucesso', async function () {
+    sinon.stub(saleService, 'createSaleProduct').resolves(serviceResponseCreated);
 
     const req = {
       body: [
@@ -51,7 +90,34 @@ describe('Realizando testes - SALE CONTROLLER:', function () {
     await saleController.createSaleProduct(req, res);
 
     expect(res.status).to.be.calledWith(201);
-    expect(res.json).to.be.calledWith(saleFromServiceCreated.data);
+    expect(res.json).to.be.calledWith(serviceResponseCreated.data);
+  });
+
+  it('Criando uma venda com falha - produto inexistente', async function () {
+    sinon.stub(productService, 'findById').resolves(serviceResponseNotFound);
+    const req = {
+      body: [
+        {
+          productId: 10,
+          quantity: 2,
+        },
+        {
+          productId: 20,
+          quantity: 3,
+        },
+      ],
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+    const next = sinon.stub().returnsThis();
+
+    await validateSaleItem(req, res, next);
+
+    expect(res.status).to.be.calledWith(404);
+    expect(res.json).to.have.been.calledWith({ message: 'Product not found' });
+    expect(next.getCalls()).to.have.lengthOf(0);
   });
 
   it('Verificando middleware validateSaleFields', async function () {
@@ -80,31 +146,87 @@ describe('Realizando testes - SALE CONTROLLER:', function () {
     expect(next).to.have.been.calledWith();
   });
 
-  it('Verificando middleware validateSaleFields com produto inexistente', async function () {
-    sinon.stub(productService, 'findById').resolves({ status: 'NOT_FOUND' });
+  it('Deleta uma venda com sucesso', async function () {
+    sinon.stub(saleService, 'deleteSale').resolves(serviceResponseSucessful);
+
     const req = {
-      body: [
-      {
-        productId: 10,
-        quantity: 2,
+      params: {
+        id: 1,
       },
-      {
-        productId: 20,
-        quantity: 3,
-      },
-    ],
     };
-  
     const res = {
       status: sinon.stub().returnsThis(),
       json: sinon.stub(),
     };
-    const next = sinon.stub().returnsThis();
 
-    await validateSaleItem(req, res, next);
+    await saleController.deleteSale(req, res);
+
+    expect(res.status).to.be.calledWith(200);
+    expect(res.json).to.be.calledWith(serviceResponseSucessful.data);
+  });
+
+  it('Deleta uma venda com falha - id inexistente', async function () {
+    sinon.stub(saleService, 'deleteSale').resolves({ status: 'NOT_FOUND', data: { message: 'Sale not found' } });
+
+    const req = {
+      params: {
+        id: 1,
+      },
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+
+    await saleController.deleteSale(req, res);
 
     expect(res.status).to.be.calledWith(404);
-    expect(res.json).to.have.been.calledWith({ message: 'Product not found' });
-    expect(next.getCalls()).to.have.lengthOf(0);
+    expect(res.json).to.be.calledWith({ message: 'Sale not found' });
+  });
+
+  it('Atualiza a quantidade de um produto em uma venda com sucesso', async function () {
+    sinon.stub(saleService, 'updateProductQuantity').resolves(serviceResponseSucessful);
+
+    const req = {
+      params: {
+        saleId: 1,
+        productId: 1,
+      },
+      body: {
+        quantity: 2,
+      },
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+
+    await saleController.updateProductQuantity(req, res);
+
+    expect(res.status).to.be.calledWith(200);
+    expect(res.json).to.be.calledWith(serviceResponseSucessful.data);
+  });
+
+  it('Atualiza a quantidade de um produto em uma venda com falha - id da venda inexistente', async function () {
+    sinon.stub(saleService, 'updateProductQuantity').resolves({ status: 'NOT_FOUND', data: { message: 'Sale not found' } });
+
+    const req = {
+      params: {
+        saleId: 1,
+        productId: 1,
+      },
+      body: {
+        quantity: 2,
+      },
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+
+    await saleController.updateProductQuantity(req, res);
+
+    expect(res.status).to.be.calledWith(404);
+    expect(res.json).to.be.calledWith({ message: 'Sale not found' });
   });
 });

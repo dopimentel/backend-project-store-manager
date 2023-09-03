@@ -94,9 +94,8 @@ describe('Realizando testes - PRODUCT CONTROLLER:', function () {
       status: sinon.stub().returnsThis(),
       json: sinon.stub(),
     };
-    const next = sinon.stub().returnsThis();
 
-    await validateProduct(req, res, next);
+    await validateProduct(req, res);
 
     expect(res.status).to.be.calledWith(400);
     expect(res.json).to.have.been.calledWith(sinon.match.has('message', '"name" is required'));
@@ -112,9 +111,8 @@ describe('Realizando testes - PRODUCT CONTROLLER:', function () {
       status: sinon.stub().returnsThis(),
       json: sinon.stub(),
     };
-    const next = sinon.stub().returnsThis();
 
-    await validateProduct(req, res, next);
+    await validateProduct(req, res);
 
     expect(res.status).to.be.calledWith(422);
     expect(res.json).to.have.been.calledWith(sinon.match.has('message', '"name" length must be at least 5 characters long'));

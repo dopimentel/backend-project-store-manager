@@ -74,7 +74,7 @@ const salesFromService = {
   data: salesFromModel,
 };
 
-const saleFromServiceCreated = {
+const serviceResponseCreated = {
   status: 'CREATED',
   data: {
     id: 3,
@@ -91,6 +91,23 @@ const saleFromServiceCreated = {
   },
 };
 
+const serviceResponseSucessful = {
+  status: 'SUCCESSFUL',
+  data: salesFromModel,
+};
+
+const serviceResponseByIdSucessful = {
+  status: 'SUCCESSFUL',
+  data: saleFromModel,
+};
+
+const serviceResponseNotFound = {
+  status: 'NOT_FOUND',
+  data: {
+    message: 'Sale not found',
+  },
+};
+
 module.exports = {
   DATE,
   salesFromDB,
@@ -99,5 +116,8 @@ module.exports = {
   saleFromModel,
   saleFromDBIdNotExists,
   salesFromService,
-  saleFromServiceCreated,
+  serviceResponseCreated,
+  serviceResponseSucessful,
+  serviceResponseByIdSucessful,
+  serviceResponseNotFound,
 };
