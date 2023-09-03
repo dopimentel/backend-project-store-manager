@@ -12,12 +12,10 @@ describe('Realizando testes - SALE MODEL:', function () {
 
   it('Verificando se a função getAll retorna um array', async function () {
     sinon.stub(connection, 'execute').resolves([salesFromDB]);
-    const sales = await connection.execute();
-
+    const sales = await saleModel.getAll();
     expect(sales).to.be.an('array');
-    expect(sales[0]).to.be.an('array');
-    expect(sales).to.deep.equal([salesFromDB]);
-    expect(sales[0][0]).to.have.all.keys('date', 'productId', 'quantity', 'saleId');
+    expect(sales[0]).to.be.an('object');
+    expect(sales[0]).to.have.all.keys('saleId', 'productId', 'date', 'quantity');
   });
   
   it('Verificando se a função findById retorna um objeto quando o ID existe', async function () {
@@ -33,4 +31,38 @@ describe('Realizando testes - SALE MODEL:', function () {
 
     expect(sale).to.equal(null);
   });
+
+  it('Insere uma venda com sucesso e retorna o ID', async function () {
+    sinon.stub(connection, 'execute').resolves([{ insertId: 1 }]);
+    const id = await saleModel.createSale();
+
+    expect(id).to.be.a('number');
+  });
+
+  it('Criando uma venda com sucesso e retornando o objeto da venda', async function () {
+    sinon.stub(connection, 'execute').onCall(0).resolves([{ insertId: 1 }]).onCall(1).resolves([{ insertId: 1 }]);
+    const products = [
+      {
+        productId: 1,
+        quantity: 2,
+      },
+      {
+        productId: 2,
+        quantity: 3,
+      },
+    ];
+    const newSale = await saleModel.createSaleProduct(products);
+    expect(newSale).to.be.an('object');
+
+  });
+
+  it('Deletando uma venda com sucesso e retornando o objeto da venda', async function () {
+    sinon.stub(connection, 'execute').onCall(0).resolves([saleFromDB]).onCall(1).resolves([{ affectedRows: 1 }]);
+
+    const sale = await saleModel.deleteSale(1);
+
+    expect(sale).to.be.an('array');
+  });
+
 });
+

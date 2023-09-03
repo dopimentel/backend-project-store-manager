@@ -79,6 +79,7 @@ const updateProductQuantity = async (saleId, productId, quantity) => {
 module.exports = {
   getAll,
   findById,
+  createSale,
   createSaleProduct,
   deleteSale,
   updateProductQuantity,
