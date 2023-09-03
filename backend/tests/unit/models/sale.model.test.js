@@ -40,7 +40,9 @@ describe('Realizando testes - SALE MODEL:', function () {
   });
 
   it('Criando uma venda com sucesso e retornando o objeto da venda', async function () {
-    sinon.stub(connection, 'execute').onCall(0).resolves([{ insertId: 1 }]).onCall(1).resolves([{ insertId: 1 }]);
+    sinon.stub(connection, 'execute').onCall(0)
+      .resolves([{ insertId: 1 }]).onCall(1)
+      .resolves([{ insertId: 1 }]);
     const products = [
       {
         productId: 1,
@@ -53,16 +55,24 @@ describe('Realizando testes - SALE MODEL:', function () {
     ];
     const newSale = await saleModel.createSaleProduct(products);
     expect(newSale).to.be.an('object');
-
   });
 
   it('Deletando uma venda com sucesso e retornando o objeto da venda', async function () {
-    sinon.stub(connection, 'execute').onCall(0).resolves([saleFromDB]).onCall(1).resolves([{ affectedRows: 1 }]);
+    sinon.stub(connection, 'execute').onCall(0).resolves([saleFromDB]).onCall(1)
+      .resolves([{ affectedRows: 1 }]);
 
     const sale = await saleModel.deleteSale(1);
 
     expect(sale).to.be.an('array');
   });
 
-});
+  it('Deletando uma venda id não existe e retornando null', async function () {
+    sinon.stub(connection, 'execute').onCall(0)
+      .resolves([saleFromDBIdNotExists]).onCall(1)
+      .resolves([{ affectedRows: 0 }]);
 
+    const sale = await saleModel.deleteSale(1000);
+
+    expect(sale).to.equal(null);
+  });
+});
