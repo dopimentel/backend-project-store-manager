@@ -1,5 +1,5 @@
 const { addProductSchema } = require('./schemas');
-const joiMapErrorToStatus = require('../utils/joiMapErrorToStatus');
+const joiErrorStatus = require('../utils/joiErrorStatus');
 
 const validateProduct = (req, res, next) => {
   const { name } = req.body;
@@ -7,7 +7,7 @@ const validateProduct = (req, res, next) => {
   if (error) {
     const { details } = error;
     const { type } = details[0];
-    return res.status(joiMapErrorToStatus(type)).json({ message: error.message });
+    return res.status(joiErrorStatus(type)).json({ message: error.message });
   }
   next();
 };
