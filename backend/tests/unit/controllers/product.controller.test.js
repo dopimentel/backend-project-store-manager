@@ -2,7 +2,7 @@ const chai = require('chai');
 const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
 const { productService } = require('../../../src/services');
-const { productsFromService, productFromService, productFromServiceNotFound } = require('../mocks/product.mock');
+const { productsFromService, productFromService, serviceResponseNotFound, productFromModel, serviceResponseNoContent } = require('../mocks/product.mock');
 const { productController } = require('../../../src/controllers');
 const { validateProduct } = require('../../../src/middlewares/validateProductFields');
 
@@ -45,7 +45,7 @@ describe('Realizando testes - PRODUCT CONTROLLER:', function () {
     expect(res.status).to.be.calledWith(200);
   });
   it('Verificando a função findById com id inexistente', async function () {
-    sinon.stub(productService, 'findById').resolves(productFromServiceNotFound);
+    sinon.stub(productService, 'findById').resolves(serviceResponseNotFound);
 
     const req = {
       params: {
@@ -91,4 +91,40 @@ describe('Realizando testes - PRODUCT CONTROLLER:', function () {
     expect(res.status).to.be.calledWith(400);
     expect(res.json).to.have.been.calledWith(sinon.match.has('message', '"name" is required'));
   });
+  it('Deletando um produto com sucesso', async function () {
+    sinon.stub(productService, 'deleteProduct').resolves(serviceResponseNoContent);
+
+    const req = {
+      params: {
+        id: 1,
+      },
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+
+    await productController.deleteProduct(req, res);
+
+    expect(res.status).to.be.calledWith(204);
+  });
+  it('Deletando um produto com id inexistente', async function () {
+    sinon.stub(productService, 'deleteProduct').resolves(serviceResponseNotFound);
+
+    const req = {
+      params: {
+        id: 1,
+      },
+    };
+    const res = {
+      status: sinon.stub().returnsThis(),
+      json: sinon.stub(),
+    };
+
+    await productController.deleteProduct(req, res);
+
+    expect(res.status).to.be.calledWith(404);
+    expect(res.json).to.have.been.calledWith(sinon.match.has('message', 'Product not found'));
+  });
+  
 });

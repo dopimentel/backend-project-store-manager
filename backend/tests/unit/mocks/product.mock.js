@@ -58,10 +58,17 @@ const productFromService = {
   data: productFromModel,
 };
 
-const productFromServiceNotFound = {
+const serviceResponseNotFound = {
   status: 'NOT_FOUND',
   data: { message: 'Product not found' },
 };
+
+const serviceResponseNoContent = {
+  status: 'NO_CONTENT',
+  data: productFromModel,
+};
+
+
 
 module.exports = {
   productFromDB,
@@ -71,5 +78,6 @@ module.exports = {
   productFromModel,
   productsFromService,
   productFromService,
-  productFromServiceNotFound,
+  serviceResponseNotFound,
+  serviceResponseNoContent,
 };
