@@ -68,7 +68,20 @@ const serviceResponseNoContent = {
   data: productFromModel,
 };
 
+const serviceResponseSucessful = {
+  status: 'SUCCESSFUL',
+  data: productsFromModel,
+};
 
+const serviceResponseByIdSucessful = {
+  status: 'SUCCESSFUL',
+  data: productFromModel,
+};
+
+const serviceResponseCreated = {
+  status: 'CREATED',
+  data: productFromModel,
+};
 
 module.exports = {
   productFromDB,
@@ -80,4 +93,7 @@ module.exports = {
   productFromService,
   serviceResponseNotFound,
   serviceResponseNoContent,
+  serviceResponseSucessful,
+  serviceResponseByIdSucessful,
+  serviceResponseCreated,
 };
