@@ -23,9 +23,23 @@ const deleteSale = async (id) => {
   return { status: 'NO_CONTENT', data: sale };
 };
 
+const updateProductQuantity = async (saleId, productId, quantity) => {
+  const serviceResponse = await saleModel.updateProductQuantity(saleId, productId, quantity);
+  if (!serviceResponse) return { status: 'NOT_FOUND', data: { message: 'Sale not found' } };
+  const { affectedRows, newSale } = serviceResponse;
+  if (affectedRows === 0) {
+  return {
+    status: 'NOT_FOUND',
+    data: { message: 'Product not found in sale' },
+  };
+}
+  return { status: 'SUCCESSFUL', data: newSale };
+};
+
 module.exports = {
   getAll,
   findById,
   createSaleProduct,
   deleteSale,
+  updateProductQuantity,
 };
