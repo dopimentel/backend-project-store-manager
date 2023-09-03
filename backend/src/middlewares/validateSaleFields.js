@@ -1,4 +1,4 @@
-const { saleSchema } = require('./schemas');
+const { saleSchema, updateProductQuantitySchema } = require('./schemas');
 const joiErrorStatus = require('../utils/joiErrorStatus');
 const { productService } = require('../services');
 
@@ -19,6 +19,18 @@ const validateSaleItem = async (req, res, next) => {
   next();
 };
 
+const validateSaleQuantity = async (req, res, next) => {
+  const { error } = updateProductQuantitySchema.validate(req.body);
+  if (error) {
+    const { details } = error;
+    const { type } = details[0];
+    return res.status(joiErrorStatus(type))
+      .json({ message: error.message });
+  }
+  next();
+};
+
 module.exports = {
   validateSaleItem,
+  validateSaleQuantity,
 };

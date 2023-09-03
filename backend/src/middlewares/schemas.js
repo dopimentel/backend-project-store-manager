@@ -11,8 +11,13 @@ const saleItemSchema = Joi.object({
 
 const saleSchema = Joi.array().items(saleItemSchema).min(1).required();
 
+const updateProductQuantitySchema = Joi.object({
+  quantity: Joi.number().integer().min(1).required(),
+});
+
 module.exports = {
   saleItemSchema,
   addProductSchema,
   saleSchema,
+  updateProductQuantitySchema,
 };
