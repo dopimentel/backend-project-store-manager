@@ -74,6 +74,23 @@ const salesFromService = {
   data: salesFromModel,
 };
 
+const saleFromServiceCreated = {
+  status: 'CREATED',
+  data: {
+    id: 3,
+    itensSold: [
+      {
+        productId: 1,
+        quantity: 2,
+      },
+      {
+        productId: 2,
+        quantity: 3,
+      },
+    ],
+  },
+};
+
 module.exports = {
   DATE,
   salesFromDB,
@@ -82,4 +99,5 @@ module.exports = {
   saleFromModel,
   saleFromDBIdNotExists,
   salesFromService,
+  saleFromServiceCreated,
 };

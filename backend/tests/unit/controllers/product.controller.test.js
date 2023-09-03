@@ -74,7 +74,8 @@ describe('Realizando testes - PRODUCT CONTROLLER:', function () {
       json: sinon.stub(),
     };
     const next = sinon.stub().returns();
-    validateProduct(req, res, next);
+    await validateProduct(req, res, next);
+
     expect(next).to.have.been.calledWith();
   });
   it('Verificando um inputs invalido da função create', async function () {
@@ -85,7 +86,8 @@ describe('Realizando testes - PRODUCT CONTROLLER:', function () {
       status: sinon.stub().returnsThis(),
       json: sinon.stub(),
     };
-    validateProduct(req, res);
+    await validateProduct(req, res);
+    
     expect(res.status).to.be.calledWith(400);
     expect(res.json).to.have.been.calledWith(sinon.match.has('message', '"name" is required'));
   });
