@@ -10,4 +10,4 @@ const joiErrorMap = {
 
 const joiErrorStatus = (joiErrorType) => joiErrorMap[joiErrorType] || 500;
 
-module.exports = joiErrorStatus
+module.exports = joiErrorStatus;
