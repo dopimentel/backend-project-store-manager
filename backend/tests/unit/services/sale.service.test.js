@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
 const { saleModel } = require('../../../src/models');
-const { salesFromModel } = require('../mocks/sale.mock');
+const { salesFromModel, saleFromDBIdNotExists } = require('../mocks/sale.mock');
 const { saleService } = require('../../../src/services');
 
 describe('Realizando testes - SALE SERVICE:', function () {
@@ -72,5 +72,35 @@ describe('Realizando testes - SALE SERVICE:', function () {
     expect(serviceResponse).to.be.an('object');
     expect(serviceResponse.status).to.be.equal('NO_CONTENT');
     expect(serviceResponse.data).to.deep.equal(salesFromModel[0]);
+  });
+  it('Verificando se a função updateProductQuantity retorna um objeto da venda atualizada', async function () {
+    sinon.stub(saleModel, 'findById').resolves(salesFromModel[0]);
+    sinon.stub(saleModel, 'updateProductQuantity').resolves({ affectedRows: 1, newSale: salesFromModel[0] });
+
+    const serviceResponse = await saleService.updateProductQuantity(1, 1, 2);
+
+    expect(serviceResponse).to.be.an('object');
+    expect(serviceResponse.status).to.be.equal('SUCCESSFUL');
+    expect(serviceResponse.data).to.deep.equal(salesFromModel[0]);
+  });
+
+  it('Verificando se a função updateProductQuantity retorna um erro quando o ID da venda não existe', async function () {
+    sinon.stub(saleModel, 'updateProductQuantity').resolves(null);
+
+    const serviceResponse = await saleService.updateProductQuantity(10000, 1, 2);
+
+    expect(serviceResponse).to.be.an('object');
+    expect(serviceResponse.status).to.be.equal('NOT_FOUND');
+    expect(serviceResponse.data).to.deep.equal({ message: 'Sale not found' });
+  });
+  it('Verificando se a função updateProductQuantity retorna um erro quando o ID do produto não existe', async function () {
+    sinon.stub(saleModel, 'findById').resolves(salesFromModel[0]);
+    sinon.stub(saleModel, 'updateProductQuantity').resolves({ affectedRows: 0 });
+
+    const serviceResponse = await saleService.updateProductQuantity(1, 10000, 2);
+
+    expect(serviceResponse).to.be.an('object');
+    expect(serviceResponse.status).to.be.equal('NOT_FOUND');
+    expect(serviceResponse.data).to.deep.equal({ message: 'Product not found in sale' });
   });
 });
