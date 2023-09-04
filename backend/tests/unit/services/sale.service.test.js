@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
 const { saleModel } = require('../../../src/models');
-const { salesFromModel, saleFromDBIdNotExists } = require('../mocks/sale.mock');
+const { salesFromModel } = require('../mocks/sale.mock');
 const { saleService } = require('../../../src/services');
 
 describe('Realizando testes - SALE SERVICE:', function () {
